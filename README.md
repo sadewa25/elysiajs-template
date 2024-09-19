@@ -33,5 +33,6 @@ for RestAPI IDE, `Insomnia` which is more simplify and low in memory usage. You 
 
 
 ## Steps
-* Prisma and Handle Basic GET, POST methods (`01_BASIC_Elysia.js`)
+* Prisma and Handle Basic GET, POST methods (`01_BASIC_Elysiajs`)
+* Upload file, Cors, Swagger, and Server Timing (`02_Swagger_Cors_ServerTiming_UploadFiles`)
 

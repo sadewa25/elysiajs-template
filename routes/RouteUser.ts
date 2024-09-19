@@ -12,10 +12,14 @@ export const RouteUsers = (app: Elysia) =>
         }),
       {
         body: UserCreateModels,
+        tags: ["User"],
+        type: "multipart/form-data",
       }
     );
 
-    user.get("/", (() => UserController.getUser()));
+    user.get("/", () => UserController.getUser(), {
+      tags: ["User"],
+    });
 
     return user;
   });

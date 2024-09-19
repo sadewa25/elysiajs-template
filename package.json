@@ -6,6 +6,9 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.1.1",
+    "@elysiajs/server-timing": "^1.1.0",
+    "@elysiajs/swagger": "^1.1.1",
     "@prisma/client": "^5.19.1",
     "elysia": "latest",
     "pg": "^8.12.0"

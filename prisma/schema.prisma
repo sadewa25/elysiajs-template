@@ -14,12 +14,12 @@ datasource db {
 }
 
 model User {
-  id    String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name  String
-  email String  @unique
-  password String @db.Text
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  deleted_at DateTime?
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  email       String    @unique
+  password    String    @db.Text
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
+  deleted_at  DateTime?
+  file_avatar String?  @db.Text
 }
-

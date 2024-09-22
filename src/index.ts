@@ -1,8 +1,8 @@
+import cors from "@elysiajs/cors";
+import serverTiming from "@elysiajs/server-timing";
+import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import { RouteUsers } from "../routes/RouteUser";
-import cors from "@elysiajs/cors";
-import swagger from "@elysiajs/swagger";
-import serverTiming from "@elysiajs/server-timing";
 
 const app = new Elysia();
 
@@ -10,7 +10,7 @@ const app = new Elysia();
 app.use(
   cors({
     preflight: true,
-    origin: Bun.env.URL,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -50,6 +50,9 @@ app.use(
   })
 );
 
+//cookies
+
+
 app.get(
   "/info",
   () => {
@@ -61,6 +64,7 @@ app.get(
     tags: ["Default"],
   }
 );
+
 app.use(RouteUsers);
 
 app.listen(3000);

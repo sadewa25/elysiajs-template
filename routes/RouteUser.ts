@@ -40,9 +40,9 @@ export const RouteUsers = (app: Elysia) =>
       user.post(
         "/sign-in",
         async ({ body, jwt, cookie: { accessToken, refreshToken }, set }) => {
-          const user = (await UserController.loginUser({
+          const user = await UserController.loginUser({
             body: body,
-          })) as UserResponseByIdProps;
+          }) as UserResponseByIdProps;
           if (!user) {
             set.status = "Bad Request";
             throw new Error(
@@ -96,6 +96,7 @@ export const RouteUsers = (app: Elysia) =>
             secure: true,
           });
 
+          // const redisClient = await initializeRedisClient();
           await RedisClientConfig.hSet(
             user.id,
             "refresh_token",
@@ -206,10 +207,9 @@ export const RouteUsers = (app: Elysia) =>
               path: "/",
             });
 
-            const redisClient = await initializeRedisClient();
-
+            // const redisClient = await initializeRedisClient();
             // set refresh token in db
-            await redisClient.hSet(user.id, "refresh_token", refreshJWTToken);
+            await RedisClientConfig.hSet(user.id, "refresh_token", refreshJWTToken);
 
             return {
               message: "Access token generated successfully",

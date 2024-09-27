@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { UserCreateProps } from "../model/UserModel"; // Add this import
+import { UserCreateProps, UserLoginProps } from "../model/UserModel"; // Add this import
 import { strings } from "../utils/strings";
 
 const prisma = new PrismaClient();
@@ -47,6 +47,24 @@ export const UserController = {
       };
     } catch (error) {
       console.log("🚀 ~ getUser: ~ error:", error);
+      return {
+        data: [],
+        message: strings.response.failed,
+      };
+    }
+  },
+  loginUser: async ({ body }: { body: UserLoginProps }) => {
+    try {
+      return await prisma.user.findUnique({
+        where: { email: body.email },
+        select: {
+          id: true,
+          email: true,
+          password: true,
+        },
+      });
+    } catch (error) {
+      console.log("🚀 ~ loginUser: ~ error:", error);
       return {
         data: [],
         message: strings.response.failed,

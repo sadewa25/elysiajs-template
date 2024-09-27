@@ -10,7 +10,7 @@ import { UserController } from "../controller/UserController";
 import { AuthPlugin } from "../lib/AuthPlugin";
 import { initializeRedisClient, RedisClientConfig } from "../lib/RedisClient";
 import { UserCreateModels } from "../model";
-import { UserLoginModels } from "../model/UserModel";
+import { UserLoginModels, UserResponseByIdProps } from "../model/UserModel";
 import { getExpTimestamp } from "../utils/extension";
 
 const prisma = new PrismaClient();
@@ -40,14 +40,9 @@ export const RouteUsers = (app: Elysia) =>
       user.post(
         "/sign-in",
         async ({ body, jwt, cookie: { accessToken, refreshToken }, set }) => {
-          const user = await prisma.user.findUnique({
-            where: { email: body.email },
-            select: {
-              id: true,
-              email: true,
-              password: true,
-            },
-          });
+          const user = (await UserController.loginUser({
+            body: body,
+          })) as UserResponseByIdProps;
           if (!user) {
             set.status = "Bad Request";
             throw new Error(
@@ -76,6 +71,7 @@ export const RouteUsers = (app: Elysia) =>
             exp: getExpTimestamp(ACCESS_TOKEN_EXP),
             iat: datetime,
           });
+
           accessToken.set({
             value: accessJWTToken,
             httpOnly: true,
@@ -100,7 +96,6 @@ export const RouteUsers = (app: Elysia) =>
             secure: true,
           });
 
-          // const redisClient = await initializeRedisClient();
           await RedisClientConfig.hSet(
             user.id,
             "refresh_token",

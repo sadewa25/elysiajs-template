@@ -20,3 +20,14 @@ export interface UserCreateProps {
   password: string;
   file_avatar: File;
 }
+
+export interface UserLoginProps {
+  email: string;
+  password: string;
+}
+
+export interface UserResponseByIdProps {
+  id: string;
+  email: string;
+  password: string;
+}

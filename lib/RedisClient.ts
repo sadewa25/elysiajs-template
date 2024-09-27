@@ -1,14 +1,16 @@
 import { createClient, RedisClientType } from "redis";
 
+export const RedisClientConfig: RedisClientType = createClient({
+  url: "redis://localhost:6379",
+});
+
 export async function initializeRedisClient(): Promise<RedisClientType> {
-  const client: RedisClientType = createClient({
-    url: "redis://localhost:6379",
-  });
+  RedisClientConfig.on("error", (err: any) =>
+    console.log("Redis Client Error", err)
+  );
+  RedisClientConfig.on("connect", () => console.log("Redis Client Connected"));
 
-  client.on("error", (err: any) => console.log("Redis Client Error", err));
-  client.on("connect", () => console.log("Redis Client Connected"));
+  await RedisClientConfig.connect();
 
-  await client.connect();
-
-  return client;
+  return RedisClientConfig;
 }

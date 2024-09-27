@@ -7,11 +7,11 @@ import {
   REFRESH_TOKEN_EXP,
 } from "../config/constant";
 import { UserController } from "../controller/UserController";
-import { initializeRedisClient } from "../lib/RedisClient";
+import { AuthPlugin } from "../lib/AuthPlugin";
+import { initializeRedisClient, RedisClientConfig } from "../lib/RedisClient";
 import { UserCreateModels } from "../model";
 import { UserLoginModels } from "../model/UserModel";
 import { getExpTimestamp } from "../utils/extension";
-import { AuthPlugin } from "../lib/AuthPlugin";
 
 const prisma = new PrismaClient();
 
@@ -37,15 +37,9 @@ export const RouteUsers = (app: Elysia) =>
         }
       );
 
-      user.get("/", () => UserController.getUser(), {
-        tags: ["User"],
-      });
-
       user.post(
         "/sign-in",
         async ({ body, jwt, cookie: { accessToken, refreshToken }, set }) => {
-          const redisClient = await initializeRedisClient();
-
           const user = await prisma.user.findUnique({
             where: { email: body.email },
             select: {
@@ -106,7 +100,12 @@ export const RouteUsers = (app: Elysia) =>
             secure: true,
           });
 
-          redisClient.hSet(user.id, "refresh_token", refreshJWTToken);
+          // const redisClient = await initializeRedisClient();
+          await RedisClientConfig.hSet(
+            user.id,
+            "refresh_token",
+            refreshJWTToken
+          );
 
           return {
             message: "Sigin successfully",
@@ -121,6 +120,10 @@ export const RouteUsers = (app: Elysia) =>
           body: UserLoginModels,
         }
       );
+
+      user.use(AuthPlugin).get("/", () => UserController.getUser(), {
+        tags: ["User"],
+      });
 
       user.use(AuthPlugin).get("/me", ({ user }) => {
         return {
@@ -151,8 +154,6 @@ export const RouteUsers = (app: Elysia) =>
         .post(
           "/refresh",
           async ({ cookie: { accessToken, refreshToken }, jwt, set }) => {
-            const redisClient = await initializeRedisClient();
-
             if (!refreshToken.value) {
               // handle error for refresh token is not available
               set.status = "Unauthorized";
@@ -210,8 +211,10 @@ export const RouteUsers = (app: Elysia) =>
               path: "/",
             });
 
+            const redisClient = await initializeRedisClient();
+
             // set refresh token in db
-            redisClient.hSet(user.id, "refresh_token", refreshJWTToken);
+            await redisClient.hSet(user.id, "refresh_token", refreshJWTToken);
 
             return {
               message: "Access token generated successfully",

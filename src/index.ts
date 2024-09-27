@@ -3,6 +3,7 @@ import serverTiming from "@elysiajs/server-timing";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import { RouteUsers } from "../routes/RouteUser";
+import { initializeRedisClient } from "../lib/RedisClient";
 
 const app = new Elysia();
 
@@ -50,8 +51,8 @@ app.use(
   })
 );
 
-//cookies
-
+// redis client config
+initializeRedisClient();
 
 app.get(
   "/info",

@@ -2,7 +2,7 @@ import jwt from "@elysiajs/jwt";
 import { PrismaClient } from "@prisma/client";
 import Elysia from "elysia";
 import { JWT_NAME } from "../config/constant";
-import { initializeRedisClient } from "./RedisClient";
+import { RedisClientConfig } from "./RedisClient";
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,7 @@ const AuthPlugin = (app: Elysia) =>
         secret: Bun.env.JWT_SECRET!,
       })
     )
-    .derive(async ({ jwt, cookie: { accessToken, refresh_token }, set }) => {
+    .derive(async ({ jwt, cookie: { accessToken, refreshToken }, set }) => {
       if (!accessToken.value) {
         // handle error for access token is not available
         set.status = "Unauthorized";
@@ -42,9 +42,9 @@ const AuthPlugin = (app: Elysia) =>
       }
 
       // implement single session based on redis to make sure that token is same with the new
-      const redisClient = await initializeRedisClient();
-      const redisToken = await redisClient.hGet(userId, "refresh_token");
-      if (redisToken !== refresh_token.value) {
+      const redisToken = await RedisClientConfig.hGetAll(userId);
+
+      if (redisToken.refresh_token !== refreshToken.value) {
         set.status = "Unauthorized";
         throw new Error("Refresh token is invalid");
       }

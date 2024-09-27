@@ -36,7 +36,3 @@ for RestAPI IDE, `Insomnia` which is more simplify and low in memory usage. You 
 * Prisma and Handle Basic GET, POST methods (`01_BASIC_Elysiajs`)
 * Upload file, Cors, Swagger, and Server Timing (`02_Swagger_Cors_ServerTiming_UploadFiles`)
 * Implementation Auth with JWT and Redis Storage (`03_Auth_JWT_Redis`)
-
-https://medium.com/@choubeyayush4/securing-node-js-applications-with-jwt-refresh-tokens-and-redis-80ffbb54285a
-
-https://elysiajs.com/patterns/cookie

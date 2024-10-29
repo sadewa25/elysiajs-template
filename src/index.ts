@@ -4,6 +4,7 @@ import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import { RouteUsers } from "../routes/RouteUser";
 import { initializeRedisClient } from "../lib/RedisClient";
+import { RouteUpload } from "../routes/RouteUpload";
 
 const app = new Elysia();
 
@@ -66,7 +67,10 @@ app.get(
   }
 );
 
+//users
 app.use(RouteUsers);
+//upload minio
+app.use(RouteUpload);
 
 app.listen(3000);
 console.log(

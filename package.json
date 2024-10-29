@@ -12,8 +12,11 @@
     "@elysiajs/swagger": "^1.1.1",
     "@prisma/client": "^5.19.1",
     "elysia": "latest",
+    "file-type": "^19.6.0",
+    "minio": "^8.0.1",
     "pg": "^8.12.0",
-    "redis": "^4.7.0"
+    "redis": "^4.7.0",
+    "short-unique-id": "^5.2.0"
   },
   "devDependencies": {
     "bun-types": "latest",

@@ -8,7 +8,7 @@ import {
 } from "../config/constant";
 import { UserController } from "../controller/UserController";
 import { AuthPlugin } from "../lib/AuthPlugin";
-import { initializeRedisClient, RedisClientConfig } from "../lib/RedisClient";
+import { RedisClientConfig } from "../lib/RedisClient";
 import { UserCreateModels } from "../model";
 import { UserLoginModels, UserResponseByIdProps } from "../model/UserModel";
 import { getExpTimestamp } from "../utils/extension";

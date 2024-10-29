@@ -36,3 +36,4 @@ for RestAPI IDE, `Insomnia` which is more simplify and low in memory usage. You 
 * Prisma and Handle Basic GET, POST methods (`01_BASIC_Elysiajs`)
 * Upload file, Cors, Swagger, and Server Timing (`02_Swagger_Cors_ServerTiming_UploadFiles`)
 * Implementation Auth with JWT and Redis Storage (`03_Auth_JWT_Redis`)
+* Scalable and Resilient Cloud Storage with MinIO (`04_Minio_Storage_Object`)

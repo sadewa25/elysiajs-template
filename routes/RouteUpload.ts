@@ -1,41 +1,17 @@
 import Elysia, { t } from "elysia";
+import { UploadController } from "../controller/UploadController";
 import MinioClient from "../lib/MinioClient";
+import { UploadFileModel } from "../model/UploadModel";
 
 export const RouteUpload = (app: Elysia) =>
   app.group("/upload", (uploadFile) => {
     uploadFile.post(
       "/",
-      async ({ body }) => {
-        const file = body.file;
-        const fileBuffer = await file.arrayBuffer(); // Use arrayBuffer for binary data
-        const bucketName = "privacy-storage";
-        const fileName = `sampel.png`;
-        const metaData = {
-          "Content-Type": "image/png",
-          "Content-Length": file.size.toString(), // Set the content length
-        };
-
-        await MinioClient.putObject(
-          bucketName,
-          fileName,
-          Buffer.from(fileBuffer), // Ensure correct buffer handling
-          file.size,
-          metaData
-        );
-
-        return {
-          data: `File uploaded successfully to ${bucketName}/${fileName}`,
-          message: "success",
-        };
-      },
+      async ({ body }) => UploadController.uploadFile({ file: body.file }),
       {
         tags: ["Upload"],
         type: "multipart/form-data",
-        body: t.Object({
-          file: t.File({
-            type: "image/png",
-          }),
-        }),
+        body: UploadFileModel,
       }
     );
 
@@ -61,6 +37,32 @@ export const RouteUpload = (app: Elysia) =>
 
         // Return the file buffer as the response with headers
         return new Response(fileBuffer, { headers });
+      },
+      {
+        tags: ["Upload"],
+        type: "multipart/form-data",
+        body: t.Object({
+          file: t.File({
+            type: "image/png",
+          }),
+        }),
+      }
+    );
+
+    uploadFile.post(
+      "/public_link",
+      async ({ body }) => {
+        const preDesignUrl = await MinioClient.presignedUrl(
+          "GET",
+          "privacy-storage",
+          "sampel.png",
+          60 * 1 //5 minutes in seconds
+        );
+
+        return {
+          data: preDesignUrl,
+          message: "success",
+        };
       },
       {
         tags: ["Upload"],

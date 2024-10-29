@@ -1,6 +1,6 @@
 import * as Minio from "minio";
 const MinioClient = new Minio.Client({
-  endPoint: "192.168.110.11",
+  endPoint: "localhost",
   port: 9000,
   useSSL: false,
   accessKey: "U81ZPIuESvGbVY2LoFLq",

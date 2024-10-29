@@ -3,8 +3,8 @@ const MinioClient = new Minio.Client({
   endPoint: "localhost",
   port: 9000,
   useSSL: false,
-  accessKey: "U81ZPIuESvGbVY2LoFLq",
-  secretKey: "j2E9ugX4QZ1mx2MrSdmKE2TZpTB4na1eXAqYFsgU",
+  accessKey: Bun.env.MINIO_ACCESS_KEY!,
+  secretKey: Bun.env.MINIO_SECRET_KEY!,
 });
 
 export default MinioClient;

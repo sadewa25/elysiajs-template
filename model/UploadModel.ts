@@ -6,3 +6,7 @@ export const UploadFileModel = t.Object({
     maxSize: 5 * 1024 * 1024, // 5 MB in bytes
   }),
 });
+
+export const GetNameFileModel = t.Object({
+  name_file: t.String({}),
+});

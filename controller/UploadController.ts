@@ -1,6 +1,7 @@
+import { fileTypeFromBuffer } from "file-type";
 import ShortUniqueId from "short-unique-id";
-import { isMetaDataImg } from "../utils/extension";
 import MinioClient from "../lib/MinioClient";
+import { isMetaDataImg } from "../utils/extension";
 
 export const UploadController = {
   uploadFile: async ({ file }: { file: File }) => {
@@ -40,5 +41,46 @@ export const UploadController = {
         message: "failed",
       };
     }
+  },
+  downloadFile: async ({ name_file }: { name_file: string }) => {
+    const stream = await MinioClient.getObject(Bun.env.BUCKET_NAME!, name_file);
+
+    // Convert the stream to a buffer
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream) {
+      chunks.push(chunk);
+    }
+    const fileBuffer = Buffer.concat(chunks as unknown as Uint8Array[]);
+
+    //determine the file type from the buffer
+    const type = await fileTypeFromBuffer(new Uint8Array(fileBuffer));
+    if (!type) {
+      return {
+        data: null,
+        message: "Unable to determine file type",
+      };
+    }
+
+    // Set response headers for PNG file
+    const headers = {
+      "Content-Type": type?.mime ?? "image/jpeg",
+      "Content-Disposition": `attachment; filename="${name_file}"`,
+    };
+
+    // Return the file buffer as the response with headers
+    return new Response(fileBuffer, { headers });
+  },
+  publicLinkFile: async ({ name_file }: { name_file: string }) => {
+    const preDesignUrl = await MinioClient.presignedUrl(
+      "GET",
+      Bun.env.BUCKET_NAME!,
+      name_file,
+      60 * 1 //5 minutes in seconds for expiry
+    );
+
+    return {
+      data: preDesignUrl,
+      message: "success",
+    };
   },
 };

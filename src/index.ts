@@ -55,25 +55,39 @@ app.use(
 );
 
 // apollo graphql
-app.use(
-  apollo({
-    typeDefs: typeDefsGql,
-    resolvers: resolversGql,
-    path: "/graphql-api",
-    context: async ({ request }: { request: Request }) => {
-      const authorization = request.headers.get("Authorization");
-      const split_auth = authorization?.split("Bearer ");
-      if (split_auth && split_auth[1] === "admin") {
-        return {
-          request,
-          authorization,
-        };
-      } else {
-        throw new Error("Unauthorized");
-      }
-    },
-  })
-);
+app
+  .use(
+    apollo({
+      typeDefs: typeDefsGql,
+      resolvers: resolversGql,
+      path: "/graphql-api",
+      context: async ({ request }: { request: Request }) => {
+        const authorization = request.headers.get("Authorization");
+        const split_auth = authorization?.split("Bearer ");
+        if (split_auth && split_auth[1] === "admin") {
+          return {
+            request,
+            authorization,
+          };
+        } else {
+          const error = new Error("Unauthorized");
+          throw error;
+        }
+      },
+      formatError: (err) => {
+        if (err.message === "Context creation failed: Unauthorized") {
+          // Set HTTP status code to 401
+          return {
+            message: err.message,
+            extensions: {
+              code: "UNAUTHORIZED",
+            },
+          };
+        }
+        return err;
+      },
+    })
+  );
 
 // redis client config
 initializeRedisClient();

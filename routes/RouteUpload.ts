@@ -1,6 +1,7 @@
 import Elysia from "elysia";
 import { UploadController } from "../controller/UploadController";
-import { GetNameFileModel, UploadFileModel } from "../model/UploadModel";
+import { GetNameFileModel, UploadFileModel, } from "../model";
+
 
 export const RouteUpload = (app: Elysia) =>
   app.group("/upload", (uploadFile) => {

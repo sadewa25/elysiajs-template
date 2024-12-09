@@ -43,6 +43,10 @@ app.use(
           description: "Endpoints related to user",
         },
         {
+          name: "Upload",
+          description: "Endpoints related to upload minio",
+        },
+        {
           name: "Default",
           description: "Basic default templates",
         },

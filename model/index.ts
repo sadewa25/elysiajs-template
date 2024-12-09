@@ -1,5 +1,5 @@
-import { UserCreateModels } from "./UserModel"
+import { GetNameFileModel, UploadFileModel } from "./UploadModel";
+import { UserCreateModels } from "./UserModel";
 
-export {
-    UserCreateModels
-}
+export { GetNameFileModel, UploadFileModel, UserCreateModels };
+

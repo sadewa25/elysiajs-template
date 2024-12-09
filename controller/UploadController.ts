@@ -1,7 +1,7 @@
-import { fileTypeFromBuffer } from "file-type";
 import ShortUniqueId from "short-unique-id";
-import MinioClient from "../lib/MinioClient";
 import { isMetaDataImg } from "../utils/extension";
+import MinioClient from "../lib/MinioClient";
+import { fileTypeFromBuffer } from "file-type";
 
 export const UploadController = {
   uploadFile: async ({ file }: { file: File }) => {

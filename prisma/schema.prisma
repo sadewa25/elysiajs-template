@@ -14,12 +14,30 @@ datasource db {
 }
 
 model User {
-  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
   email       String    @unique
   password    String    @db.Text
   created_at  DateTime  @default(now())
   updated_at  DateTime  @default(now())
   deleted_at  DateTime?
-  file_avatar String?  @db.Text
+  file_avatar String?   @db.Text
+
+  // Define the relation to the Article model
+  articles Article[]
+}
+
+model Article {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  content    String    @db.Text
+  user_id    String    @db.Uuid
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  // Define the relation to the User model
+  user User @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
 }

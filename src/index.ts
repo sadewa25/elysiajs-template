@@ -5,6 +5,8 @@ import { Elysia } from "elysia";
 import { RouteUsers } from "../routes/RouteUser";
 import { initializeRedisClient } from "../lib/RedisClient";
 import { RouteUpload } from "../routes/RouteUpload";
+import apollo from "@elysiajs/apollo";
+import { resolversGql, typeDefsGql } from "../lib/GqlPlugin";
 
 const app = new Elysia();
 
@@ -49,6 +51,27 @@ app.use(
       ],
     },
     path: "/",
+  })
+);
+
+// apollo graphql
+app.use(
+  apollo({
+    typeDefs: typeDefsGql,
+    resolvers: resolversGql,
+    path: "/graphql-api",
+    context: async ({ request }: { request: Request }) => {
+      const authorization = request.headers.get("Authorization");
+      const split_auth = authorization?.split("Bearer ");
+      if (split_auth && split_auth[1] === "admin") {
+        return {
+          request,
+          authorization,
+        };
+      } else {
+        throw new Error("Unauthorized");
+      }
+    },
   })
 );
 
